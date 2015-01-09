@@ -132,6 +132,10 @@ Clone the control repository and cd to its directory:
     git clone git@github.com:puppetinabox/controlrepo.git
     cd controlrepo
 
+> Reminder: You should mostly be using forks of the puppetinabox repos, but
+> the documentation will refer to the original repos. Replace the URI with
+> your fork URI.
+
 Install the puppet module [zack/r10k](https://forge.puppetlabs.com/zack/r10k),
 which will install r10k for us. Create the modules directory first with these
 commands:
