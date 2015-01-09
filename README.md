@@ -5,12 +5,13 @@
   * [Network](#network)
   * [Users](#users)
   * [Git](#git)
-2. [Bootstrap](#bootstrap) - Create the puppet master
-3. [Creating Your First Node](#creating-your-first-node) - Add a DNS server
-4. [Additional Nodes](#additional-nodes) - Instructions for additional puppetized nodes
-5. [Get Labbing!](#get-labbing)
-6. [TODO](#todo)
-7. [BUGS](#bugs)
+2. [Preparation](#preparation)
+3. [Bootstrap](#bootstrap) - Create the puppet master
+4. [Creating Your First Node](#creating-your-first-node) - Add a DNS server
+5. [Additional Nodes](#additional-nodes) - Instructions for additional puppetized nodes
+6. [Get Labbing!](#get-labbing)
+7. [TODO](#todo)
+8. [BUGS](#bugs)
 
 ## Overview
 
