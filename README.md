@@ -201,12 +201,6 @@ Copy the default puppet and hiera configuration files to the correct locations:
     mkdir -p /etc/puppet/hiera/data
     ln -f /etc/puppet/hiera.yaml /etc/hiera.yaml
 
-You will need at least two host entries as there is no DNS service available
-yet. Add the *puppet* and *yum* entries. You may modify the IPs in the file
-first if you are not using 10.0.0.0/24:
-
-    puppet apply hosts_add.pp
-
 Commit and push the
 changes upstream:
 
@@ -274,7 +268,8 @@ Without it, every node will need hosts entries, as we had to add to the
 Create a new node called *dns* or *dns01* (suggested IP 10.0.0.253). Because
 DNS is not available yet, be sure to apply the hosts entries from the
 controlrepo before continuing. Use SCP, git clone, or just cat/vi to create
-the file on the new node.
+the file on the new node. Modify the IPs in the file first if you are not
+using 10.0.0.0/24:
 
     puppet apply hosts_add.pp
 
@@ -344,8 +339,8 @@ repository (and pushed upstream!), r10k is rerun on the master, and puppet is
 rerun on *dns*. If the changes are not urgent, the last step can be skipped
 and *dns* will pick up the changes on its next checkin, within 30 minutes.
 
-Now that the DNS service exists, you can remove the hosts entries on *puppet*
-and *dns* using the **hosts_remove.pp** file from the controlrepo:
+Now that the DNS service exists, you can remove the hosts entries on *dns*
+using the **hosts_remove.pp** file from the controlrepo:
 
     sudo puppet apply hosts_remove.pp
 
