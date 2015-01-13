@@ -7,7 +7,7 @@
   * [Git](#git)
 2. [Preparation](#preparation)
 3. [Bootstrap](#bootstrap) - Create the puppet master
-4. [Creating Your First Node](#creating-your-first-node) - Add a DNS server
+4. [Creating Your First Managed Node](#creating-your-first-managed-node) - Add a DNS server
 5. [Additional Nodes](#additional-nodes) - Instructions for additional puppetized nodes
 6. [Get Labbing!](#get-labbing)
 7. [TODO](#todo)
@@ -196,8 +196,8 @@ Modify **r10k_installation.pp** to reference the new controlrepo location:
 
 Copy the default puppet and hiera configuration files to the correct locations:
 
-    cp puppet.conf /etc/puppet
-    cp hiera.yaml /etc/puppet
+    cp -fn puppet.conf /etc/puppet
+    cp -fn hiera.yaml /etc/puppet
     mkdir -p /etc/puppet/hiera/data
     ln -f /etc/puppet/hiera.yaml /etc/hiera.yaml
 
@@ -251,7 +251,7 @@ Congratulations! You now have a fully functioning puppet server that supports
 puppet with Apache/Passenger for scalability, hiera for external data, and
 puppetdb for exported resources and reporting.
 
-## Creating your first node
+## Creating Your First Managed Node
 
 You can now create additional nodes and assign services via puppet. Included is
 a [custom_facts module](https://github.com/puppetinabox/custom_facts) and site
@@ -349,7 +349,7 @@ and *dns* using the **hosts_remove.pp** file from the controlrepo:
 
     sudo puppet apply hosts_remove.pp
 
-## Additional nodes
+## Additional Nodes
 
 The *controlrepo* includes sample hiera data for additional nodes: *dhcp*
 (10.0.0.254), *build* (10.0.0.???), and *yumrepo* (10.0.0.252). Any files
@@ -357,6 +357,10 @@ required are in *lab_config*. There is also a role for *webserver*, which does
 not require any hiera configuration. As with DNS, you can deploy these services
 by creating a node with the same name as the role, with an optional trailing
 number, i.e. *webserver02*, *build1*, or *dhcp*.
+
+After you create the yum repo, change the 'lab' repo in [manifests/base.pp]
+(https://github.com/puppetinabox/profile/blob/master/manifests/base.pp#L56) to
+`enable => 1,`
 
 ## Get Labbing
 
