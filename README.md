@@ -196,8 +196,10 @@ Modify **r10k_installation.pp** to reference the new controlrepo location:
 
 Copy the default puppet and hiera configuration files to the correct locations:
 
-    cp -fn puppet.conf /etc/puppet
-    cp -fn hiera.yaml /etc/puppet
+    rm -f /etc/puppet/puppet.conf
+    cp puppet.conf /etc/puppet
+    rm -f /etc/puppet/hiera.yaml
+    cp hiera.yaml /etc/puppet
     mkdir -p /etc/puppet/hiera/data
     ln -f /etc/puppet/hiera.yaml /etc/hiera.yaml
 
