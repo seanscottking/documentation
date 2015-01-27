@@ -19,7 +19,7 @@ This project aims to provide the user with a puppetized lab setup. It can be
 used as the foundation of a home network, a *learning puppet* environment, or
 as a proof of concept lab for non-puppet software and hardware. Once complete,
 the lab environment will provide a number of services to the designated
-network:
+network. Each service definition includes a valid SELinux security configuration.
 
   * dns
   * dhcp
