@@ -29,6 +29,8 @@ network. Each service definition includes a valid SELinux security configuration
   * r10k
   * yum repository
   * build server
+  * mysql
+  * phpmyadmin
 
 The user must provide a default gateway for external configuration (see
 [network](#network) for more information).
@@ -54,6 +56,8 @@ should be configured in your OS templates:
   * 10.0.0.1 - default gw (user provided)
   * 10.0.0.5 - puppet
   * 10.0.0.10 - build
+  * 10.0.0.11 - phpmyadmin
+  * 10.0.0.40 - mysql
   * 10.0.0.252 - yumrepo (CNAME yum)
   * 10.0.0.253 - dns
   * 10.0.0.254 - dhcp
@@ -266,6 +270,8 @@ would receive the same role. The provided roles are:
   * build: includes FPM, rspec-puppet and puppetlabs_spec_helper (via RVM for CentOS 6.5), gcc, and rpmbuild. No managed git server is provided, the use of GitHub is encouraged for persistent repositories.
   * yumrepo: Create yum repositories based on hiera data. Manages underlying directory structure as well
   * webserver: generic Apache web server role. It can be improved upon or used as a base to build more specific roles targeted to specific apps
+  * mysql: MySQL database server with client. **Requires an additional 41GB of unused space on the existing drive ([more info](http://rnelson0.com/2020/01/31/deploying-mysql-with-puppet-without-disabling-selinux/)).**
+  * phpmyadmin: phpMyAdmin, a web interface for a MySQL database
 
 DNS is required for almost everything, which makes it a great starting point.
 Without it, every node will need hosts entries, as we had to add to the
@@ -371,10 +377,9 @@ how you use your lab, find me on
 [twitter](https://twitter.com/rnelson0) or open an
 [issue](https://github.com/puppetinabox/documentation/issues)!
 
-### TODO
+### Roadmap
 
-  * Provide an rsyslog or elk role.
-  * Provide a default gateway node or instructions to provide one.
+View the [planned milestones](https://github.com/puppetinabox/documentation/milestones).
 
 ### BUGS
 
