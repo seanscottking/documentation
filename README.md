@@ -31,6 +31,7 @@ network. Each service definition includes a valid SELinux security configuration
   * build server
   * mysql
   * phpmyadmin
+  * tftp
 
 The user must provide a default gateway for external configuration (see
 [network](#network) for more information).
@@ -58,6 +59,7 @@ should be configured in your OS templates:
   * 10.0.0.10 - build
   * 10.0.0.11 - phpmyadmin
   * 10.0.0.40 - mysql
+  * 10.0.0.251 - tftp
   * 10.0.0.252 - yumrepo (CNAME yum)
   * 10.0.0.253 - dns
   * 10.0.0.254 - dhcp
@@ -272,6 +274,7 @@ would receive the same role. The provided roles are:
   * webserver: generic Apache web server role. It can be improved upon or used as a base to build more specific roles targeted to specific apps
   * mysql: MySQL database server with client. **Requires an additional 41GB of unused space on the existing drive ([more info](http://rnelson0.com/2020/01/31/deploying-mysql-with-puppet-without-disabling-selinux/)).**
   * phpmyadmin: phpMyAdmin, a web interface for a MySQL database
+  * tftp: TFTP server for PXE boot/Auto Deploy or to host network device firmware updates.
 
 DNS is required for almost everything, which makes it a great starting point.
 Without it, every node will need hosts entries, as we had to add to the
