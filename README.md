@@ -33,6 +33,10 @@ network. Each service definition includes a valid SELinux security configuration
 The user must provide a default gateway for external configuration (see
 [network](#network) for more information).
 
+Puppetinabox was covered on the 1/14/2015 vBrownBag DevOps Series. Watch 
+the video and [check out the slides]
+(http://www.slideshare.net/rnelson0/vbrownbag-devops-series-puppetinabox)!
+
 ### Supported Software
 **OS**: CentOS 6.5 and 6.6 have been tested thoroughly, specifically with
 [my CentOS kickstart](http://rnelson0.com/2014/04/18/kickstart-your-centos-template/).
