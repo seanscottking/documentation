@@ -146,12 +146,14 @@ Clone the control repository and cd to its directory:
 > the documentation will refer to the original repos. Replace the URI with
 > your fork URI.
 
-Install the puppet module [zack/r10k](https://forge.puppetlabs.com/zack/r10k),
-which will install r10k for us. Create the modules directory first with these
-commands:
+Install some modules for the bootstrap process in a temporary location.
+[zack/r10k](https://forge.puppetlabs.com/zack/r10k) installs r10k and
+[hunner/hiera](https://forge.puppetlabs.com/hunner/hiera) creates the hiera
+configuration and directories.
 
     mkdir -p /root/bootstrap/modules
-    puppet module install zack/r10k --modulepath=/root/bootstrap/modules
+    puppet module install --modulepath=/root/bootstrap/modules zack/r10k
+    puppet module install --modulepath=/root/bootstrap/modules hunner/hiera
 
 In the *controlrepo production* branch, modify the *git* references in the
 **Puppetfile** to point to your fork/duplicate repos:
@@ -208,10 +210,10 @@ Copy the default puppet and hiera configuration files to the correct locations:
 
     rm -f /etc/puppet/puppet.conf
     cp puppet.conf /etc/puppet
-    rm -f /etc/puppet/hiera.yaml
-    cp hiera.yaml /etc/puppet
-    mkdir -p /etc/puppet/hiera/data
-    ln -f /etc/puppet/hiera.yaml /etc/hiera.yaml
+
+Apply the hiera configuration:
+
+    puppet apply hiera.pp
 
 Commit and push the
 changes upstream:
