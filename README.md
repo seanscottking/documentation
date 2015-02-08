@@ -6,12 +6,13 @@
   * [Users](#users)
   * [Git](#git)
 2. [Preparation](#preparation)
-3. [Bootstrap](#bootstrap) - Create the puppet master
-4. [Creating Your First Managed Node](#creating-your-first-managed-node) - Add a DNS server
-5. [Additional Nodes](#additional-nodes) - Instructions for additional puppetized nodes
-6. [Get Labbing!](#get-labbing)
-7. [TODO](#todo)
-8. [BUGS](#bugs)
+3. [Git Modifications](#git-modifications)
+4. [Bootstrap](#bootstrap) - Create the puppet master
+5. [Creating Your First Managed Node](#creating-your-first-managed-node) - Add a DNS server
+6. [Additional Nodes](#additional-nodes) - Instructions for additional puppetized nodes
+7. [Get Labbing!](#get-labbing)
+8. [Roadmap](#roadmap)
+9. [BUGS](#bugs)
 
 ## Overview
 
@@ -122,40 +123,9 @@ repos is **optional**.
 The repository URLs, whether forks, duplicates, or originals, will be used during
 the next step.
 
-## Bootstrap
+### Git Modifications ###
 
-Create a new node (vm, vagrant box, bare metal, docker, etc) called *puppet*
-(suggested IP 10.0.0.5). The entire bootstrap section will all be performed on this node.
-DNS should point the short name *puppet* to this IP (i.e.
-*puppet.example.com* resolves to this node). If you do not have DNS configured
-(we will set up DNS later in this lab), then an **/etc/hosts** entry on nodes
-will suffice for the moment.
-
-Log in as root. Generate ssh keys for root and add them as [deploy keys]
-(https://developer.github.com/guides/managing-deploy-keys/#deploy-keys)
-to your repos, or as ssh keys for your Github account. [Set up Git]
-(https://help.github.com/articles/set-up-git/#setting-up-git) with the correct
-user.name and user.email.
-
-Clone the control repository and cd to its directory:
-
-    git clone git@github.com:puppetinabox/controlrepo.git
-    cd controlrepo
-
-> Reminder: You should mostly be using forks of the puppetinabox repos, but
-> the documentation will refer to the original repos. Replace the URI with
-> your fork URI.
-
-Install some modules for the bootstrap process in a temporary location.
-[zack/r10k](https://forge.puppetlabs.com/zack/r10k) installs r10k and
-[hunner/hiera](https://forge.puppetlabs.com/hunner/hiera) creates the hiera
-configuration and directories.
-
-    mkdir -p /root/bootstrap/modules
-    puppet module install --modulepath=/root/bootstrap/modules zack/r10k
-    puppet module install --modulepath=/root/bootstrap/modules hunner/hiera
-
-In the *controlrepo production* branch, modify the *git* references in the
+In your *controlrepo production* branch, modify the *git* references in the
 **Puppetfile** to point to your fork/duplicate repos:
 
     # Original
@@ -206,24 +176,68 @@ Modify **r10k_installation.pp** to reference the new controlrepo location:
       manage_modulepath => false
     }
 
-Copy the default puppet and hiera configuration files to the correct locations:
+You may also modify the settings in **hiera.pp** if you desire (optional).
 
-    rm -f /etc/puppet/puppet.conf
-    cp puppet.conf /etc/puppet
+If you are changing the DNS values, modify the *lab_config* repo's
+`files/dns/*` files. Hiera data is of course in the *hiera* repo and the
+role/profile data are in the *role* and *profile* repos, respectively.
+
+Commit and push the changes upstream:
+
+    git commit -am 'Initial commit of my new puppetized setup'
+    # controlrepo
+    git push origin production
+    # hiera
+    git push origin data
+    # lab_config, role, profile, custom_facts, linuxfw
+    git push origin master
+
+## Bootstrap
+
+Create a new node (vm, vagrant box, bare metal, docker, etc) called *puppet*
+(suggested IP 10.0.0.5). The entire bootstrap section will all be performed on this node.
+DNS should point the short name *puppet* to this IP (i.e.
+*puppet.example.com* resolves to this node). If you do not have DNS configured
+(we will set up DNS later in this lab), then an **/etc/hosts** entry on nodes
+will suffice for the moment.
+
+Log in as root. Generate ssh keys for root and add them as [deploy keys]
+(https://developer.github.com/guides/managing-deploy-keys/#deploy-keys)
+to your repos, or as ssh keys for your Github account. [Set up Git]
+(https://help.github.com/articles/set-up-git/#setting-up-git) with the correct
+user.name and user.email.
+
+Clone the control repository and cd to its directory:
+
+    git clone git@github.com:puppetinabox/controlrepo.git
+    cd controlrepo
+
+> Reminder: You should mostly be using forks of the puppetinabox repos, but
+> the documentation will refer to the original repos. Replace the URI with
+> the URI of your fork.
+
+Install some modules for the bootstrap process in a temporary location.
+[zack/r10k](https://forge.puppetlabs.com/zack/r10k) installs r10k and
+[hunner/hiera](https://forge.puppetlabs.com/hunner/hiera) creates the hiera
+configuration and directories.
+
+    mkdir -p /root/bootstrap/modules
+    puppet module install --modulepath=/root/bootstrap/modules zack/r10k --version 2.5.4
+    puppet module install --modulepath=/root/bootstrap/modules stahnma/epel --version 1.0.2
+    puppet module install --modulepath=/root/bootstrap/modules stephenrjohnson/puppet --version 1.3.1
+    puppet module install --modulepath=/root/bootstrap/modules hunner/hiera --version 1.1.1
+
+Apply the puppet configuration
+
+    puppet apply --modulepath=/root/bootstrap/modules master.pp
 
 Apply the hiera configuration:
 
-    puppet apply hiera.pp
-
-Commit and push the
-changes upstream:
-
-    git commit -am 'Initial commit of my new puppetized setup'
-    git push origin production
+    puppet apply --modulepath=/root/bootstrap/modules hiera.pp
 
 Apply the configuration with with:
 
-    puppet apply r10k_installation.pp --modulepath=/root/bootstrap/modules
+    puppet apply --modulepath=/root/bootstrap/modules r10k_installation.pp
 
 This will install r10k and configure it to use your defined *controlrepo*. You
 can then run r10k as root:
@@ -234,14 +248,7 @@ This will create a puppet environment called production at
 **/etc/puppet/environments/production** with all of the modules specified in
 the *controlrepo* **Puppetfile**, including the other repos that you forked.
 The hiera repository will be checked out to **/etc/puppet/hiera/data**. Puppet
-is ready for its first run.
-
-Install puppet-server and start the puppetmaster service:
-
-    yum install puppet-server -y
-    service puppetmaster start
-
-Now that puppet is running, you may see what will be applied to the puppet
+is ready for its first run.  You may preview what will be applied to the puppet
 master with the noop flag:
 
     puppet agent -t --noop
@@ -254,6 +261,12 @@ You can then apply the catalog by dropping the noop flag:
 > creating a database, populating it, and starting the database service, which
 > can sometimes take longer than the puppet's timeout. Don't worry, just
 > run the command again and it will complete on the second try.
+
+Lastly, ensure that the *puppet* service (the agent) is running and set to run
+at startup. On an EL linux, use the following commands:
+
+    chkconfig puppet on
+    service puppet start
 
 Congratulations! You now have a fully functioning puppet server that supports
 puppet with Apache/Passenger for scalability, hiera for external data, and
