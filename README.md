@@ -8,6 +8,8 @@
 2. [Preparation](#preparation)
 3. [Git Modifications](#git-modifications)
 4. [Bootstrap](#bootstrap) - Create the puppet master
+  * [Automated Install](#automated-install)
+  * [Manual Install](#manual-install)
 5. [Creating Your First Managed Node](#creating-your-first-managed-node) - Add a DNS server
 6. [Additional Nodes](#additional-nodes) - Instructions for additional puppetized nodes
 7. [Get Labbing!](#get-labbing)
@@ -194,12 +196,12 @@ Commit and push the changes upstream:
 
 ## Bootstrap
 
-Create a new node (vm, vagrant box, bare metal, docker, etc) called *puppet*
-(suggested IP 10.0.0.5). The entire bootstrap section will all be performed on this node.
-DNS should point the short name *puppet* to this IP (i.e.
-*puppet.example.com* resolves to this node). If you do not have DNS configured
-(we will set up DNS later in this lab), then an **/etc/hosts** entry on nodes
-will suffice for the moment.
+The puppet master must be bootstrapped. Create a new node (vm, vagrant box,
+bare metal, docker, etc) called *puppet* (suggested IP 10.0.0.5). The entire
+bootstrap section will all be performed on this node.  DNS should point the
+short name *puppet* to this IP (i.e.  *puppet.example.com* resolves to this
+node). If you do not have DNS configured (we will set up DNS later in this
+lab), then an **/etc/hosts** entry on nodes will suffice for the moment.
 
 Log in as root. Generate ssh keys for root and add them as [deploy keys]
 (https://developer.github.com/guides/managing-deploy-keys/#deploy-keys)
@@ -207,14 +209,32 @@ to your repos, or as ssh keys for your Github account. [Set up Git]
 (https://help.github.com/articles/set-up-git/#setting-up-git) with the correct
 user.name and user.email.
 
+> Reminder: You should mostly be using forks of the puppetinabox repos, but
+> the documentation will refer to the original repos. Replace the URI with
+> the URI of your fork.
+
 Clone the control repository and cd to its directory:
 
     git clone git@github.com:puppetinabox/controlrepo.git
     cd controlrepo
 
-> Reminder: You should mostly be using forks of the puppetinabox repos, but
-> the documentation will refer to the original repos. Replace the URI with
-> the URI of your fork.
+### Automated Install
+
+If you know what you are doing or you are not interested in the details of
+bootstrapping the master, you may run a script to perform the bootstrap
+install.
+
+    ./bootstrap.sh
+
+If the script encounters any issues, proceed step by step with the remaining
+instructions and identify the error. Otherwise, you may skip to [Creating
+Your First Managed Node] (#creating-your-first-managed-node).
+
+### Manual Install
+
+The manual install is intended for those who want a better understanding of the
+bootstrapping process itself, and anyone who encounters issues with the
+automated bootstrap script.
 
 Install some modules for the bootstrap process in a temporary location.
 [zack/r10k](https://forge.puppetlabs.com/zack/r10k) installs r10k and
