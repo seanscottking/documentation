@@ -102,25 +102,10 @@ Before standing up the lab, you will need to fork or duplicate some repositories
 > private repo. GitHub has directions to [duplicate a public repo as a
 > private repo](https://help.github.com/articles/duplicating-a-repository/)
 
-These repos will become specific to your lab environment and it is **mandatory**
-they be forked or duplicated:
+These repos will become specific to your lab environment and it is suggested that they be forked or duplicated.
 
   * [controlrepo](https://github.com/puppetinabox/controlrepo)
-  * [hiera](https://github.com/puppetinabox/hiera)
   * [lab_config](https://github.com/puppetinabox/lab_config)
-
-The role/profile modules are where a majority of customizations will occur.
-Unless you are using puppetinabox 'as-is', you **should** fork/duplicate these repos:
-
-  * [role](https://github.com/puppetinabox/role)
-  * [profile](https://github.com/puppetinabox/profile)
-
-These additional repositories will work fine as is until you decide to make
-changes. The are designed to be functional as is. Forking/duplicating these
-repos is **optional**.
-
-  * [custom_facts](https://github.com/puppetinabox/custom_facts)
-  * [linuxfw](https://github.com/puppetinabox/linuxfw)
 
 The repository URLs, whether forks, duplicates, or originals, will be used during
 the next step.
@@ -131,29 +116,24 @@ In your *controlrepo production* branch, modify the *git* references in the
 **Puppetfile** to point to your fork/duplicate repos:
 
     # Original
-    mod 'role',
-      :git => 'git@github.com:puppetinabox/role'
+    mod 'lab_config',
+      :git => 'git@github.com:puppetinabox/lab_config'
     ...
         
     # New
-    mod 'role',
-      :git => 'git@github.com:rnelson0/role'
+    mod 'lab_config',
+      :git => 'git@github.com:example/lab_config'
     ...
 
 Modify **r10k_installation.pp** to reference the new controlrepo location:
 
     # Original
     class { 'r10k':
-      version => '1.4.0',
+      version => '1.5.1',
       sources => {
         'puppet' => {
           'remote'  => 'git@github.com:puppetinabox/controlrepo.git',
           'basedir' => "${::settings::confdir}/environments",
-          'prefix'  => false,
-        },
-        'hiera' => {
-          'remote'  => 'git@github.com:puppetinabox/hiera.git',
-          'basedir' => "/etc/puppet/hiera",
           'prefix'  => false,
         }
       },
@@ -162,16 +142,11 @@ Modify **r10k_installation.pp** to reference the new controlrepo location:
 
     # New
     class { 'r10k':
-      version => '1.4.0',
+      version => '1.5.1',
       sources => {
         'puppet' => {
-          'remote'  => 'git@github.com:rnelson0/controlrepo.git',
+          'remote'  => 'git@github.com:example/controlrepo.git',
           'basedir' => "${::settings::confdir}/environments",
-          'prefix'  => false,
-        },
-        'hiera' => {
-          'remote'  => 'git@github.com:rnelson0/hiera.git',
-          'basedir' => "/etc/puppet/hiera",
           'prefix'  => false,
         }
       },
@@ -189,9 +164,7 @@ Commit and push the changes upstream:
     git commit -am 'Initial commit of my new puppetized setup'
     # controlrepo
     git push origin production
-    # hiera
-    git push origin data
-    # lab_config, role, profile, custom_facts, linuxfw
+    # lab_config
     git push origin master
 
 ## Bootstrap
@@ -215,7 +188,7 @@ user.name and user.email.
 
 Clone the control repository and cd to its directory:
 
-    git clone git@github.com:puppetinabox/controlrepo.git
+    git clone git@github.com:example/controlrepo.git
     cd controlrepo
 
 ### Automated Install
