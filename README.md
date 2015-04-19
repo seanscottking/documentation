@@ -155,9 +155,8 @@ Modify **r10k_installation.pp** to reference the new controlrepo location:
 
 You may also modify the settings in **hiera.pp** if you desire (optional).
 
-If you are changing the DNS values, modify the *lab_config* repo's
-`files/dns/*` files. Hiera data is of course in the *hiera* repo and the
-role/profile data are in the *role* and *profile* repos, respectively.
+Hiera data is located in the *controlrepo*'s `hiera` directory.
+Configuration files, such as DNS zones, are located in the *lab_config* repository's `files` directories.
 
 Commit and push the changes upstream:
 
@@ -240,8 +239,9 @@ can then run r10k as root:
 This will create a puppet environment called production at
 **/etc/puppet/environments/production** with all of the modules specified in
 the *controlrepo* **Puppetfile**, including the other repos that you forked.
-The hiera repository will be checked out to **/etc/puppet/hiera/data**. Puppet
-is ready for its first run.  You may preview what will be applied to the puppet
+The hiera data is located at `/etc/puppet/environments/%{environment}/hiera`.
+
+Puppet is now ready for its first run.  You may preview what will be applied to the puppet
 master with the noop flag:
 
     puppet agent -t --noop
@@ -267,12 +267,12 @@ puppetdb for exported resources and reporting.
 
 ## Creating Your First Managed Node
 
-You can now create additional nodes and assign services via puppet. Included is
-a [custom_facts module](https://github.com/puppetinabox/custom_facts) and site
-manifest that assigns roles to nodes based on the hostname. If the hostname
-matches the format *role[##]*, the role is applied. For instance, our node
-called *puppet* received the role called *puppet*. Another node named *puppet2*
-would receive the same role. The provided roles are:
+You can now create additional nodes and assign services via puppet.
+Included is a custom_fact and a site manifest that assigns roles to nodes based on the hostname.
+If the hostname matches the format *role[##]*, the role is applied.
+For instance, our node called *puppet* received the role called *puppet*.
+Another node named *puppet2* would receive the same role.
+The provided roles are:
 
   * dns: single server, can handle multiple zones via hiera
   * dhcp: single server, can handle multiple scopes and reservations via hiera
